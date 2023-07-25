@@ -19,9 +19,7 @@ class LoginPage extends StatelessWidget {
               children: [
                 Logo(title: 'Messenger'),
                 LoginForm(),
-                Labels(
-                  path: 'register'
-                ),
+                Labels(path: 'register'),
               ],
             ),
           ),
@@ -67,7 +65,8 @@ class _LoginFormState extends State<LoginForm> {
               ),
               const SizedBox(height: 18.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, 'user'),
                 child: const Text('Login'),
               ),
             ],

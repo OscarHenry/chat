@@ -28,6 +28,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: appRoutes,
       initialRoute: 'login',
+      builder: (context, child) => GestureDetector(
+        onTap: () => Focus.of(context).unfocus(),
+        child: child,
+      ),
     );
   }
 }

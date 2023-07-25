@@ -73,7 +73,8 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
               const SizedBox(height: 18.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, 'user'),
                 child: const Text('Login'),
               ),
             ],
