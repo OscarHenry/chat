@@ -9,6 +9,20 @@ class User {
     required this.email,
     this.online = false,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        uuid: json['uuid'] ?? '',
+        name: json['name'] ?? '',
+        email: json['email'] ?? '',
+        online: json['online'] ?? false,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'uuid': uuid,
+        'name': name,
+        'email': email,
+        'online': online,
+      };
 }
 
 final usersList = [

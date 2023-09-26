@@ -18,12 +18,9 @@ class MessageItem extends StatelessWidget {
         sizeFactor:
             CurvedAnimation(parent: message.animCtr, curve: Curves.decelerate),
         child: Container(
-          margin: EdgeInsets.fromLTRB(
-            isMyMessage ? 8 : 150,
-            8,
-            isMyMessage ? 150 : 8,
-            8,
-          ),
+          margin: isMyMessage
+              ? const EdgeInsets.fromLTRB(8, 8, 150, 8)
+              : const EdgeInsets.fromLTRB(150, 8, 8, 8),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: isMyMessage ? Colors.blueGrey[50] : Colors.blue[100],

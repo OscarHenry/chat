@@ -1,6 +1,8 @@
 import 'package:chat/models/user.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:chat/widgets/connectivity_status_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
@@ -16,8 +18,11 @@ class _UserPageState extends State<UserPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        title: const Text('My Name'),
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.logout)),
+        title: Text(context.watch<AuthService>().session.user?.name ?? ''),
+        leading: IconButton(
+          onPressed: _logOut,
+          icon: const Icon(Icons.logout),
+        ),
         actions: const [
           ConnectivityStatusIcon(isActive: true),
         ],
@@ -55,5 +60,11 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> _onRefresh() async {
     await Future.delayed(const Duration(milliseconds: 500));
+  }
+
+  Future<void> _logOut() async {
+    await context.read<AuthService>().logOut().then(
+          (value) => Navigator.pushReplacementNamed(context, 'login'),
+        );
   }
 }

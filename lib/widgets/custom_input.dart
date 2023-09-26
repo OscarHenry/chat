@@ -9,6 +9,7 @@ class CustomInput extends StatelessWidget {
     this.obscureText = false,
     this.textInputAction = TextInputAction.done,
     this.textInputType = TextInputType.text,
+    this.validator,
   });
 
   final TextEditingController? controller;
@@ -17,6 +18,7 @@ class CustomInput extends StatelessWidget {
   final bool obscureText;
   final TextInputAction textInputAction;
   final TextInputType textInputType;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class CustomInput extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(vertical: 15),
       ),
       textInputAction: textInputAction,
+      validator: validator,
     );
   }
 }

@@ -1,5 +1,8 @@
+import 'package:chat/services/auth_service.dart';
+import 'package:chat/widgets/async_button.dart';
 import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -37,8 +40,24 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  late final TextEditingController emailController = TextEditingController();
-  late final TextEditingController passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+
+  @override
+  void initState() {
+    emailController = TextEditingController(
+        text: context.read<AuthService>().session.user?.email);
+    passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +65,7 @@ class _LoginFormState extends State<LoginForm> {
       child: Container(
         margin: const EdgeInsets.all(48.0),
         child: Form(
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -54,6 +74,7 @@ class _LoginFormState extends State<LoginForm> {
                 hintText: 'Email',
                 prefixIcon: const Icon(Icons.email),
                 textInputType: TextInputType.emailAddress,
+                validator: emailValidator,
               ),
               const SizedBox(height: 8.0),
               CustomInput(
@@ -62,11 +83,11 @@ class _LoginFormState extends State<LoginForm> {
                 prefixIcon: const Icon(Icons.password),
                 textInputType: TextInputType.visiblePassword,
                 obscureText: true,
+                validator: passwordValidator,
               ),
               const SizedBox(height: 18.0),
-              ElevatedButton(
-                onPressed: () =>
-                    Navigator.pushReplacementNamed(context, 'user'),
+              AsyncButton(
+                onPressed: submit,
                 child: const Text('Login'),
               ),
             ],
@@ -74,5 +95,48 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ),
     );
+  }
+
+  String? emailValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your email';
+    }
+    return null;
+  }
+
+  String? passwordValidator(value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your password';
+    }
+
+    if (value.length <= 6) {
+      return 'Password must be at least 6 characters';
+    }
+
+    return null;
+  }
+
+  Future<void> submit() async {
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (isValid) {
+      _formKey.currentState?.save();
+      await context
+          .read<AuthService>()
+          .logIn(
+            email: emailController.text,
+            password: passwordController.text,
+          )
+          .then((userOrNull) {
+        if (userOrNull == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Login failed'),
+            ),
+          );
+        } else {
+          Navigator.pushReplacementNamed(context, 'user');
+        }
+      });
+    }
   }
 }
