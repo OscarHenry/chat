@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:chat/global/api_response.dart';
+import 'package:chat/models/api_response.dart';
 import 'package:chat/global/environments.dart';
 import 'package:chat/global/storage_mixin.dart';
 import 'package:chat/models/session.dart';

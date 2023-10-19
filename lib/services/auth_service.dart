@@ -1,17 +1,21 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:chat/global/di.dart';
 import 'package:chat/models/session.dart';
 import 'package:chat/models/user.dart';
 import 'package:chat/repositories/authentication_repository.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 
 class AuthService with ChangeNotifier {
   final AuthenticationRepository _authRepo = AuthenticationRepository();
   final FlutterSecureStorage _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
+  final SocketService socketService = getIt<SocketService>();
   late Session session = Session();
 
   // Log-in
@@ -54,6 +58,7 @@ class AuthService with ChangeNotifier {
   // Log-out
   Future<void> logOut() async {
     await session.remove(all: false);
+    socketService.disconnect();
     notifyListeners();
   }
 
@@ -63,7 +68,12 @@ class AuthService with ChangeNotifier {
       session = await Session.fromStorage();
       log('Session is active => ${session.isActive} [$session]');
       if (session.isActive) {
-        _authRepo.renewToken();
+        final (user, token, exception) = await _authRepo.renewToken();
+        if (exception != null) throw exception;
+        session = Session(token: token, user: user);
+        await session.save();
+        socketService.connect();
+        notifyListeners();
       } else {
         logOut();
       }

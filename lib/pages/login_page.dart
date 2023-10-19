@@ -1,4 +1,7 @@
+import 'package:chat/global/di.dart';
+import 'package:chat/global/extensions.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/async_button.dart';
 import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +43,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  final SocketService socketService = getIt<SocketService>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController emailController;
   late final TextEditingController passwordController;
@@ -128,12 +132,9 @@ class _LoginFormState extends State<LoginForm> {
           )
           .then((userOrNull) {
         if (userOrNull == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Login failed'),
-            ),
-          );
+          context.showSnackBar(text: 'Login failed');
         } else {
+          socketService.connect();
           Navigator.pushReplacementNamed(context, 'user');
         }
       });

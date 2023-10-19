@@ -1,7 +1,8 @@
 import 'package:chat/global/di.dart';
-import 'package:chat/pages/pages.dart';
+import 'package:chat/global/extensions.dart';
 import 'package:chat/router/routes.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthService>(
             create: (_) => getIt<AuthService>()),
+        ChangeNotifierProvider<SocketService>(
+            create: (_) => getIt<SocketService>()),
       ],
       builder: (context, _) => MaterialApp(
         title: 'Flutter Demo',
@@ -39,7 +42,7 @@ class MyApp extends StatelessWidget {
         initialRoute:
             context.read<AuthService>().session.isActive ? 'user' : 'login',
         builder: (context, child) => GestureDetector(
-          onTap: () => Focus.of(context).unfocus(),
+          onTap: () => context.unFocus(),
           child: child,
         ),
       ),

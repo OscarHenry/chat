@@ -1,5 +1,7 @@
+import 'package:chat/global/di.dart';
 import 'package:chat/models/user.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/connectivity_status_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  final SocketService socketService = getIt<SocketService>();
   final List<User> users = usersList;
   @override
   Widget build(BuildContext context) {
@@ -23,9 +26,7 @@ class _UserPageState extends State<UserPage> {
           onPressed: _logOut,
           icon: const Icon(Icons.logout),
         ),
-        actions: const [
-          ConnectivityStatusIcon(isActive: true),
-        ],
+        actions: const [ConnectivityStatusIcon()],
       ),
       body: RefreshIndicator.adaptive(
         onRefresh: _onRefresh,
@@ -51,9 +52,7 @@ class _UserPageState extends State<UserPage> {
           shape: BoxShape.circle,
           color: user.online ? Colors.green : Colors.blueGrey,
         ),
-        constraints: BoxConstraints.loose(
-          const Size.fromRadius(4),
-        ),
+        constraints: BoxConstraints.loose(const Size.fromRadius(4)),
       ),
     );
   }
@@ -64,7 +63,7 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> _logOut() async {
     await context.read<AuthService>().logOut().then(
-          (value) => Navigator.pushReplacementNamed(context, 'login'),
+          (_) => Navigator.pushReplacementNamed(context, 'login'),
         );
   }
 }
