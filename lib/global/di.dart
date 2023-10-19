@@ -7,7 +7,7 @@ final getIt = GetIt.instance;
 
 Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
-  getIt.registerLazySingleton<SocketService>(() => SocketService());
+  getIt.registerSingleton<SocketService>(SocketService());
   getIt.registerSingleton<AuthService>(AuthService());
   await getIt<AuthService>().checkSession();
 }

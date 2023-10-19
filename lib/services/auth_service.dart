@@ -1,20 +1,14 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:chat/global/di.dart';
 import 'package:chat/models/session.dart';
-import 'package:chat/models/user.dart';
 import 'package:chat/repositories/authentication_repository.dart';
 import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get_it/get_it.dart';
 
 class AuthService with ChangeNotifier {
   final AuthenticationRepository _authRepo = AuthenticationRepository();
-  final FlutterSecureStorage _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
   final SocketService socketService = getIt<SocketService>();
   late Session session = Session();
 
