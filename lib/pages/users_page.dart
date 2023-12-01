@@ -1,48 +1,51 @@
-import 'package:chat/global/di.dart';
 import 'package:chat/models/user.dart';
 import 'package:chat/services/auth_service.dart';
-import 'package:chat/services/socket_service.dart';
+import 'package:chat/services/user_service.dart';
 import 'package:chat/widgets/connectivity_status_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class UserPage extends StatefulWidget {
+class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
   @override
-  State<UserPage> createState() => _UserPageState();
-}
-
-class _UserPageState extends State<UserPage> {
-  final SocketService socketService = getIt<SocketService>();
-  final List<User> users = usersList;
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        title: Text(context.watch<AuthService>().session.user?.name ?? ''),
-        leading: IconButton(
-          onPressed: _logOut,
-          icon: const Icon(Icons.logout),
+    return ChangeNotifierProvider(
+      create: (_) => UserService()..fetchUsers(),
+      builder: (context, child) => Scaffold(
+        appBar: AppBar(
+          elevation: 1,
+          title: Text(context.read<AuthService>().currentUser?.name ?? ''),
+          leading: IconButton(
+            onPressed: () => _logOut(context),
+            icon: const Icon(Icons.logout),
+          ),
+          actions: const [ConnectivityStatusIcon()],
         ),
-        actions: const [ConnectivityStatusIcon()],
-      ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: _onRefresh,
-        child: ListView.separated(
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          itemCount: users.length,
-          itemBuilder: (context, index) => buildUserItem(user: users[index]),
-          separatorBuilder: (context, index) => const Divider(),
+        body: Consumer<UserService>(
+          builder: (context, state, child) => RefreshIndicator.adaptive(
+            onRefresh: () => _onRefresh(context),
+            child: ListView.separated(
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
+              itemCount: state.users.length,
+              itemBuilder: (context, index) =>
+                  buildUserItem(context: context, user: state.users[index]),
+              separatorBuilder: (context, index) => const Divider(),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  ListTile buildUserItem({required User user}) {
+  ListTile buildUserItem({
+    required BuildContext context,
+    required User user,
+  }) {
     return ListTile(
+      onTap: () => GoRouter.of(context).push('/chat', extra: user),
       title: Text(user.name),
       subtitle: Text(user.email),
       leading:
@@ -57,13 +60,12 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Future<void> _onRefresh() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-  }
+  Future<void> _onRefresh(BuildContext context) async =>
+      context.read<UserService>().fetchUsers();
 
-  Future<void> _logOut() async {
+  Future<void> _logOut(BuildContext context) async {
     await context.read<AuthService>().logOut().then(
-          (_) => Navigator.pushReplacementNamed(context, 'login'),
+          (_) => context.go('/'),
         );
   }
 }

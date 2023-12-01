@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Labels extends StatelessWidget {
   const Labels({super.key, required this.path});
@@ -15,7 +16,7 @@ class Labels extends StatelessWidget {
             style: TextStyle(color: Colors.black54, fontSize: 16),
           ),
           Visibility(
-            visible: path == 'login',
+            visible: path == '/',
             replacement: buildBtn(
                 context: context, path: path, title: 'Crea una ahora!'),
             child: buildBtn(
@@ -37,7 +38,7 @@ class Labels extends StatelessWidget {
     required String title,
   }) {
     return TextButton(
-      onPressed: () => Navigator.pushReplacementNamed(context, path),
+      onPressed: () => context.go(path),
       child: Text(
         title,
         style: const TextStyle(fontWeight: FontWeight.bold),

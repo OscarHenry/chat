@@ -2,37 +2,39 @@ class User {
   bool online;
   String name;
   String email;
-  String uuid;
+  String uid;
   User({
-    required this.uuid,
+    required this.uid,
     required this.name,
     required this.email,
     this.online = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        uuid: json['uuid'] ?? '',
+        uid: json['uid'] ?? '',
         name: json['name'] ?? '',
         email: json['email'] ?? '',
         online: json['online'] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
-        'uuid': uuid,
+        'uid': uid,
         'name': name,
         'email': email,
         'online': online,
       };
+
+  String get initials => name.substring(0, 2).toUpperCase();
 }
-
-final usersList = [
-  User(uuid: '1', name: 'Oscar', email: 'oscarhenry@gmail.com', online: true),
-  User(uuid: '2', name: 'Arianna', email: 'arianna@gmail.com', online: true),
-  User(uuid: '3', name: 'Pedro', email: 'pedro@gmail.com'),
-  User(uuid: '4', name: 'Juan', email: 'juan@gmail.com', online: true),
-];
-
-final oscarUser =
-    User(uuid: '1', name: 'Oscar', email: 'oscarhenry@gmail.com', online: true);
-final ariannaUser =
-    User(uuid: '2', name: 'Arianna', email: 'arianna@gmail.com', online: true);
+//
+// final usersList = [
+//   User(uid: '1', name: 'Oscar', email: 'oscarhenry@gmail.com', online: true),
+//   User(uid: '2', name: 'Arianna', email: 'arianna@gmail.com', online: true),
+//   User(uid: '3', name: 'Pedro', email: 'pedro@gmail.com'),
+//   User(uid: '4', name: 'Juan', email: 'juan@gmail.com', online: true),
+// ];
+//
+// final oscarUser =
+//     User(uid: '1', name: 'Oscar', email: 'oscarhenry@gmail.com', online: true);
+// final ariannaUser =
+//     User(uid: '2', name: 'Arianna', email: 'arianna@gmail.com', online: true);

@@ -1,4 +1,6 @@
+import 'package:chat/global/di.dart';
 import 'package:chat/global/environments.dart';
+import 'package:chat/models/session.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -30,12 +32,15 @@ class SocketService with ChangeNotifier {
   Function get emit => _socket!.emit;
 
   /// Connects the socket
-  void connect() {
+  Future connect() async {
+    final session = await Session.fromStorage();
+
     // Dart client
     _socket = io.io(Environments.socketUrl, {
       'transports': ['websocket'],
       'auto-connect': true,
       'forceNew': true,
+      'extraHeaders': {'x-token': '${session.token}'},
     });
 
     _socket!.onConnect((_) {
@@ -54,5 +59,12 @@ class SocketService with ChangeNotifier {
     if (_socket != null) {
       _socket!.disconnect();
     }
+  }
+
+  @override
+  void dispose() {
+    disconnect();
+    getIt.resetLazySingleton<SocketService>(instance: this);
+    super.dispose();
   }
 }

@@ -5,6 +5,7 @@ import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/async_button.dart';
 import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class LoginPage extends StatelessWidget {
               children: [
                 Logo(title: 'Messenger'),
                 LoginForm(),
-                Labels(path: 'register'),
+                Labels(path: '/register'),
               ],
             ),
           ),
@@ -135,7 +136,7 @@ class _LoginFormState extends State<LoginForm> {
           context.showSnackBar(text: 'Login failed');
         } else {
           socketService.connect();
-          Navigator.pushReplacementNamed(context, 'user');
+          context.go('/user');
         }
       });
     }

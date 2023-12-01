@@ -5,6 +5,7 @@ import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/async_button.dart';
 import 'package:chat/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class RegisterPage extends StatelessWidget {
               children: [
                 Logo(title: 'Register'),
                 RegisterForm(),
-                Labels(path: 'login'),
+                Labels(path: '/'),
               ],
             ),
           ),
@@ -146,7 +147,7 @@ class _RegisterFormState extends State<RegisterForm> {
           context.showSnackBar(text: 'Register failed');
         } else {
           socketService.connect();
-          Navigator.pushReplacementNamed(context, 'user');
+          context.go('/user');
         }
       });
     }

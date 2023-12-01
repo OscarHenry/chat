@@ -1,16 +1,39 @@
-import 'package:chat/models/user.dart';
 import 'package:flutter/animation.dart';
 
 class Message {
-  final User userSender;
-  final String content;
-  final DateTime time;
-  final AnimationController animCtr;
+  final String from;
+  final String to;
+  final String message;
+  final DateTime? createdAt;
+  late final AnimationController animController;
 
-  const Message({
-    required this.userSender,
-    required this.content,
-    required this.time,
-    required this.animCtr,
-  });
+  Message({
+    required this.from,
+    required this.to,
+    required this.message,
+    this.createdAt,
+    AnimationController? controller,
+  }) {
+    if (controller != null) {
+      animController = controller;
+    }
+  }
+
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+        from: json['from'],
+        to: json['to'],
+        message: json['message'],
+        createdAt: DateTime.tryParse(json['createdAt']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'from': from,
+        'to': to,
+        'message': message,
+        'createdAt': createdAt?.toIso8601String(),
+      };
+
+  @override
+  String toString() => 'Message(from: $from, to: $to, message: $message, '
+      'createdAt: $createdAt)';
 }

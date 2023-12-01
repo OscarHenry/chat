@@ -1,4 +1,3 @@
-import 'package:chat/models/message.dart';
 import 'package:flutter/material.dart';
 
 class ChatButtonNavigationBar extends StatefulWidget {
@@ -20,11 +19,7 @@ class _ChatButtonNavigationBarState extends State<ChatButtonNavigationBar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    double containerHeight = kMinInteractiveDimension +
-        MediaQuery.of(context).viewPadding.bottom +
-        8;
-    var containerPadding = EdgeInsets.fromLTRB(
-        14, 14, 14, MediaQuery.of(context).viewPadding.bottom);
+    var containerPadding = const EdgeInsets.all(14);
     const containerDecoration = BoxDecoration(
       gradient: LinearGradient(
         colors: [Colors.white, Colors.white10],
@@ -45,7 +40,6 @@ class _ChatButtonNavigationBarState extends State<ChatButtonNavigationBar> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 15),
     );
     return Container(
-      height: containerHeight,
       padding: containerPadding,
       decoration: containerDecoration,
       child: Row(
@@ -66,6 +60,7 @@ class _ChatButtonNavigationBarState extends State<ChatButtonNavigationBar> {
               foregroundColor: Colors.blue,
               disabledBackgroundColor: Colors.grey[100],
               disabledForegroundColor: Colors.grey,
+              fixedSize: const Size.fromRadius(24),
             ),
           )
         ],

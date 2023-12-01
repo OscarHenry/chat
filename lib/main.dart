@@ -1,6 +1,6 @@
 import 'package:chat/global/di.dart';
 import 'package:chat/global/extensions.dart';
-import 'package:chat/router/routes.dart';
+import 'package:chat/router/router.dart';
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SocketService>(
             create: (_) => getIt<SocketService>()),
       ],
-      builder: (context, _) => MaterialApp(
+      builder: (context, _) => MaterialApp.router(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.light,
@@ -38,9 +38,7 @@ class MyApp extends StatelessWidget {
         ).copyWith(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        routes: appRoutes,
-        initialRoute:
-            context.read<AuthService>().session.isActive ? 'user' : 'login',
+        routerConfig: AppRouter.routerConfig,
         builder: (context, child) => GestureDetector(
           onTap: () => context.unFocus(),
           child: child,
